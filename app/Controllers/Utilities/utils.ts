@@ -47,25 +47,25 @@ export const sendBalance = async (amount, user, emailto) => {
 
 export const WithdrawtoBank = async (amount, user) => {
   const bank = await Bank.findByOrFail('user_id', user.id)
-
+  let responseData 
   try {
     const JsonResponse = await axios({
       headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}` },
       method: 'post',
-      url: 'https://api.flutterwave.com/v3/transfer',
-      data: withDrawData(amount, bank.code, bank.accountNumber),
+      url: 'https://api.flutterwave.com/v3/transfers',
+      data: withDrawData(amount, bank.bankcode, bank.accountNumber),
     })
-
-    if (JsonResponse.data.status === 'success') {
-      user.balance = user.balance - amount
-      user.save()
+ responseData = await JsonResponse
+   console.log(responseData)
       return {
         message: 'Withdrawal successful',
-      }
+       data: responseData
     }
   } catch (error) {
     return {
       message: 'unable to process withdrawal, please try again later',
+      error: responseData 
+      
     }
   }
 }
@@ -103,11 +103,14 @@ export const addAccount = async (user_id, details, filter:String) => {
      
                await user.related('bank').create({
                     bankname: details.bankname,
-                    code: details.code,
-                    accountNumber:details.accountNumber
+                    bankcode: details.code,
+                    accountNumber: details.accountNumber
                   });
                })
        
+               return {
+                 message:"successfully added your bank"
+               }
      
      }else if(filter === 'beneficiary'){
       await Database.transaction(async (trx) => {
@@ -119,6 +122,11 @@ export const addAccount = async (user_id, details, filter:String) => {
              accountNumber:details.accountNumber
            });
         })
+
+        return {
+          message:"successfully added a beneficiary"
+        }
+
      }
 }
 

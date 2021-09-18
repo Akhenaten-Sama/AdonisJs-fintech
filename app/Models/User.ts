@@ -20,7 +20,9 @@ export default class User extends BaseModel {
   @hasMany(() => Beneficiary)
   public beneficiary: HasMany<typeof Beneficiary>
 
-  @hasOne(() => Bank)
+  @hasOne(() => Bank,{
+    foreignKey: 'user_id'
+  })
   public bank: HasOne<typeof Bank>
 
   @column()

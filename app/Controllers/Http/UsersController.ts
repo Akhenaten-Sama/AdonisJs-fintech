@@ -1,6 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
-import { WithdrawtoBank, fundAccount, sendBalance, verify } from '../Utilities/utils'
+import { WithdrawtoBank, fundAccount, sendBalance, verify, addAccount } from '../Utilities/utils'
 
 export default class UsersController {
 
@@ -58,8 +58,8 @@ export default class UsersController {
 
     const user = (auth.use('api').user!)
 
-    const response0bj = WithdrawtoBank(amount, user)
-
+    const response0bj = await WithdrawtoBank(amount, user)
+   console.log(response0bj)
     return response0bj
   }
 
@@ -78,7 +78,7 @@ export default class UsersController {
     
     if (request.host() ==='localhost:3000'){
       return {
-        message:"unathorized"
+        message:"unathorized access"
       }
     }
       
@@ -87,4 +87,18 @@ export default class UsersController {
     return responseObj
   }
 
+
+  public async addBank({request, auth}: HttpContextContract){
+    const user = (auth.use('api').user!)
+ const {code, accountNumber, bankname} = request.body()
+ const details = {
+   code,
+   accountNumber,
+   bankname
+ }
+    const response0bj = addAccount(user.id, details, "bank")
+       return response0bj
+  }
 }
+
+

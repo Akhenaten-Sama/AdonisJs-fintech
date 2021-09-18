@@ -23,17 +23,19 @@ export const data = (amount, email, userid, name)=>{
 }
 
 
-export const withDrawData = (amount, bankCode, accountNo )=>{
+export const withDrawData = (amount,  bankCode, accountNo )=>{
 
    return{
-      "account_bank": bankCode,
-      "account_number": accountNo,
-      "amount": amount,
+      "account_bank": `0${bankCode}`,
+      "account_number": "0690000040",
+      "amount":amount,
       "narration": "Transfer From Olalekan's fintech app",
       "currency": "NGN",
-      "reference": "akhlm-pstmnpyt-rfxx007_PMCKDU_1",
+      "reference": `fintech-${accountNo}-${amount}_PMCKDU_`,
       "callback_url": "https://webhook.site/b3e505b0-fe02-430e-a538-22bbbce8ce0d",
-      "debit_currency": "NGN"
+      "debit_currency": "NGN",
+     // "customer_id": user_id,
+      
    }
    
 }

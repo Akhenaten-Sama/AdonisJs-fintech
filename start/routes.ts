@@ -39,6 +39,9 @@ Route.group(()=>{
   Route.post('users/withdraw', 'UsersController.withdraw')
   Route.post('users/transfer', 'UsersController.transfer')
   Route.post('users/verify', 'UsersController.verify')
+  Route.post('users/addbank', 'UsersController.addBank')
+  Route.post('users/addbeneficiary', 'UsersController.addBeneficiary')
+
  
   
 }).middleware("auth")

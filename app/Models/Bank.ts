@@ -11,10 +11,14 @@ export default class Bank extends BaseModel {
     public bankname: string
 
     @column()
+    public user_id: string
+
+
+    @column()
     public accountNumber:Number
 
     @column()
-    public code:Number
+    public bankcode:Number
 
     @belongsTo(() => User)
     public user: BelongsTo<typeof User>
