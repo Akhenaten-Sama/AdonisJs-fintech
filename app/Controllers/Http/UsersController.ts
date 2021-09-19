@@ -5,11 +5,11 @@ import { WithdrawtoBank, fundAccount, sendBalance, verify, addAccount } from '..
 export default class UsersController {
 
 
-  public async show({ auth, response, params }: HttpContextContract) {
+  public async show({ auth, response, }: HttpContextContract) {
     
     await auth.use('api').authenticate()
     response.status(200)
-    const user = await User.find(params.id)
+   // const user = await User.find(params.id)
 
     // const response0bj = {
     //   name: user?.name,
@@ -72,7 +72,7 @@ export default class UsersController {
        return response0bj
   }
 
-  public async verify({auth, request}:HttpContextContract){
+  public async verify({request}:HttpContextContract){
     const body = request.body()
     const {Id, Amount} = body
     
@@ -89,8 +89,13 @@ export default class UsersController {
 
 
   public async addBank({request, auth}: HttpContextContract){
-    const user = (auth.use('api').user!)
+
+
+    try {
+      const user = (auth.use('api').user!)
  const {code, accountNumber, bankname} = request.body()
+
+ 
  const details = {
    code,
    accountNumber,
@@ -98,7 +103,38 @@ export default class UsersController {
  }
     const response0bj = addAccount(user.id, details, "bank")
        return response0bj
-  }
+  
+    } catch (error) {
+      return {
+        message:"invalid credentials, request failed!"
+      }
+    }
+    
 }
 
+
+public async addBeneficiary({request, auth}: HttpContextContract){
+
+
+  try {
+    const user = (auth.use('api').user!)
+const {code, accountNumber, bankname} = request.body()
+
+
+const details = {
+ code,
+ accountNumber,
+ bankname
+}
+  const response0bj = addAccount(user.id, details, "beneficiary")
+     return response0bj
+
+  } catch (error) {
+    return {
+      message:"invalid credentials, request failed!"
+    }
+  }
+  
+}
+}
 

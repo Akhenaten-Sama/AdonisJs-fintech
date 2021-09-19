@@ -5,13 +5,16 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Env from '@ioc:Adonis/Core/Env'
 import { withDrawData, data } from './data'
 
+
+
+
+
+
+
+
 export const sendBalance = async (amount, user, emailto) => {
   const From = user
   const To = await User.findBy('email', emailto)
-
-
-  
-
 
   if(!To||From.email === To?.email){
     return {message:"Destination account does not exist"}
@@ -50,7 +53,7 @@ export const WithdrawtoBank = async (amount, user) => {
   let responseData 
   try {
     const JsonResponse = await axios({
-      headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}` },
+      headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}`},
       method: 'post',
       url: 'https://api.flutterwave.com/v3/transfers',
       data: withDrawData(amount, bank.bankcode, bank.accountNumber),
@@ -64,7 +67,7 @@ export const WithdrawtoBank = async (amount, user) => {
   } catch (error) {
     return {
       message: 'unable to process withdrawal, please try again later',
-      error: responseData 
+      error: error.message 
       
     }
   }

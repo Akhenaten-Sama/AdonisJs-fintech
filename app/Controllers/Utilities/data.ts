@@ -1,3 +1,17 @@
+export const  randomStrings = (length)=> {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+  }
+  return result;
+ }
+
+
+
+
 export const data = (amount, email, userid, name)=>{
     return{
     "tx_ref":`fintech ${email}+${userid}+${amount}`,
@@ -27,11 +41,11 @@ export const withDrawData = (amount,  bankCode, accountNo )=>{
 
    return{
       "account_bank": `0${bankCode}`,
-      "account_number": "0690000040",
+      "account_number": `0${accountNo}`,
       "amount":amount,
       "narration": "Transfer From Olalekan's fintech app",
       "currency": "NGN",
-      "reference": `fintech-${accountNo}-${amount}_PMCKDU_`,
+      "reference": randomStrings(25),
       "callback_url": "https://webhook.site/b3e505b0-fe02-430e-a538-22bbbce8ce0d",
       "debit_currency": "NGN",
      // "customer_id": user_id,
