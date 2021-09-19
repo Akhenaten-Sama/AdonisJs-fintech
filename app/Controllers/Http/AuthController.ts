@@ -22,7 +22,7 @@ export default class AuthController {
     /**
      * Create a new user
      */
-    const user = User.create(userDetails);
+    const user = await User.create(userDetails);
     await auth.use('api').login(user)
    return user
   }
@@ -34,7 +34,7 @@ export default class AuthController {
     const user = await User.findBy('email', body.email)
 
 
-    if (!(await Hash.verify(user.password, body.password))) {
+    if (!(await Hash.verify(user? user.password: '', body.password))) {
       return response.badRequest('Invalid credentials')
     }else{
       
