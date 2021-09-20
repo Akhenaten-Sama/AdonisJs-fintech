@@ -24,7 +24,7 @@ const databaseConfig: DatabaseConfig = {
   | file.
   |
   */
-  connection: Application.inDev?'mysql':'clearDB',
+  connection: Application.inDev? 'mysql':'cleardb',
 
   connections: {
     /*
@@ -39,7 +39,7 @@ const databaseConfig: DatabaseConfig = {
     |
     */
 
-    clearDB:{
+    cleardb:{
       client: 'mysql',
       connection: {
         host: CLEARDB_DATABASE_URL.host as string,
