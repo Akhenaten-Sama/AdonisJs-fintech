@@ -86,7 +86,7 @@ export const fundAccount = async (user, amount) => {
 
     //post the funds via flutterwave
     const JsonResponse = await axios({
-      headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}` },
+      headers: { Authorization:`Bearer ${Env.get('MYSECRETKEY')}` },
       method: 'post',
       url: 'https://api.flutterwave.com/v3/payments',
       data: data(amount, user.email, user.id, user.name),
