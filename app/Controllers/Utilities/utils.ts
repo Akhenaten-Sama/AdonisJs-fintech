@@ -11,21 +11,24 @@ import { withDrawData, data } from './data'
 
 
 
-
+// transfers from one account to another
 export const sendBalance = async (amount, user, emailto) => {
   const From = user
   const To = await User.findBy('email', emailto)
 
+  //prevent crediting self
   if(!To||From.email === To?.email){
-    return {message:"Destination account does not exist"}
+    return {message:"You caanot send funds to yourself"}
   }
 
   try {
-     
+     //if you balance is less than amount
   if (From.balance < amount) {
     return {
       message: 'insufficient balance',
     }
+
+    //when all bottlenecks have been escaped from
   } else if (From && To) {
     From.balance = From.balance - amount
     To.balance = To.balance + amount
@@ -47,11 +50,13 @@ export const sendBalance = async (amount, user, emailto) => {
 }
 
 
-
+//handles bank and beneficiary withdrawals
 export const WithdrawtoBank = async (amount, user) => {
   const bank = await Bank.findByOrFail('user_id', user.id)
   let responseData 
   try {
+
+    //post the transfer via flutterwave
     const JsonResponse = await axios({
       headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}`},
       method: 'post',
@@ -74,10 +79,12 @@ export const WithdrawtoBank = async (amount, user) => {
 }
 
 
-
+//handles funding of account
 export const fundAccount = async (user, amount) => {
   
   try {
+
+    //post the funds via flutterwave
     const JsonResponse = await axios({
       headers: { Authorization: `Bearer ${Env.get('MYSECRETKEY')}` },
       method: 'post',
@@ -98,7 +105,7 @@ export const fundAccount = async (user, amount) => {
   }
 }
 
-
+//handles adding of withdrawal accounts
 export const addAccount = async (user_id, details, filter:String) => {
      if(filter === 'bank'){
          await Database.transaction(async (trx) => {
@@ -133,7 +140,7 @@ export const addAccount = async (user_id, details, filter:String) => {
      }
 }
 
-
+//verifies the transaction and credits the account
 export const verify = async(user_id, amount)=>{
 
   const user = await User.find(user_id)

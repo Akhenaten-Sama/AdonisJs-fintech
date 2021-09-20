@@ -4,6 +4,14 @@ import { schema, rules } from "@ioc:Adonis/Core/Validator";
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class AuthController {
+public async index({}:HttpContextContract){
+ return{
+   message:"Fintech Api 1.0.",
+   Author:"Efunkunle Olalekan",
+   Extra:"I hope I get the job"
+ }
+}
+  //registers new users
   public async register({auth, request }: HttpContextContract) {
     /**
      * Validate user details
@@ -26,14 +34,13 @@ export default class AuthController {
     await auth.use('api').login(user)
    return user
   }
-
+//logs the user in
   public async login({ auth, response, request }: HttpContextContract, ) {
 
-    
     const body = request.body()
     const user = await User.findBy('email', body.email)
 
-
+//verifies password
     if (!(await Hash.verify(user? user.password: '', body.password))) {
       return response.badRequest('Invalid credentials')
     }else{

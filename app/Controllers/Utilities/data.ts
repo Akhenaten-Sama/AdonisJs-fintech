@@ -1,3 +1,4 @@
+//generates random strings for transaction reference
 export const  randomStrings = (length)=> {
    var result           = '';
    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -14,7 +15,7 @@ export const  randomStrings = (length)=> {
 
 export const data = (amount, email, userid, name)=>{
     return{
-    "tx_ref":`fintech ${email}+${userid}+${amount}`,
+    "tx_ref":randomStrings(30),
     "amount":amount,
     "currency":"NGN",
     "redirect_url":"https://webhook.site/9d0b00ba-9a69-44fa-a43d-a82c33c36fdc",

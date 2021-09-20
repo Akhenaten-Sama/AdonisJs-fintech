@@ -4,44 +4,67 @@ import { WithdrawtoBank, fundAccount, sendBalance, verify, addAccount } from '..
 
 export default class UsersController {
 
-
+//returns currently logged in user
   public async show({ auth, response, }: HttpContextContract) {
-    
-    await auth.use('api').authenticate()
-    response.status(200)
-   // const user = await User.find(params.id)
-
-    // const response0bj = {
-    //   name: user?.name,
-    //   email: user?.email,
-    // }
-        const userObj = (auth.use('api').user!)
-    return {
-       user: userObj
+    try {
+      await auth.use('api').authenticate()
+      response.status(200)
+          const userObj = (auth.use('api').user!)
+      return {
+         user: userObj
+      }
+    } catch (error) {
+      return{
+        message:"An error occured"
+      }
     }
+   
   }
 
-  public async store({ request, response }: HttpContextContract) {
-    const body = request.body()
+  
 
-    const user = await User.create(body)
+  
 
-    response.status(201)
-
-    return user
-  }
-
+//updates basic user details
   public async update({ params, request }: HttpContextContract) {
-    const body = request.body()
 
-    const user = await User.findByOrFail('id', params.id)
+    try {
+      const body = request.body()
 
-    user.name = body.name
-    user.email = body.email
-
-    return user.save()
+      const user = await User.findByOrFail('id', params.id)
+  
+      user.name = body.name
+      user.email = body.email
+  
+       user.save()
+       return user
+    } catch (error) {
+      return {
+        message:"There was an error editing your details",
+        error:error.message
+      }
+    }
+   
   }
 
+//delete user account
+  public async destroy({auth}:HttpContextContract){
+    try {
+      const user = (auth.use('api').user!)
+      user.delete()
+
+      return {
+        message:"Account deleted"
+      }
+    } catch (error) {
+      return {
+        error:"unable to delete user"
+      }
+    }
+   
+  }
+
+  //funds the user account
   public async fund({ auth, request }: HttpContextContract) {
     const body = request.body()
     const {amount } = body
@@ -52,6 +75,8 @@ export default class UsersController {
     return responseObj
   }
 
+
+  //withdraws to bank 
   public async withdraw({auth,  request }: HttpContextContract) {
     const body = request.body()
     const { amount } = body
@@ -63,34 +88,49 @@ export default class UsersController {
     return response0bj
   }
 
+
+  //Transfers funds to fellow users, request are confiremd by the Zapier webhook
   public async transfer({auth, request}:HttpContextContract){
-    const body = request.body()
+    try {
+      const body = request.body()
     const user = (auth.use('api').user!)
     const { email, amount } = body
 
     const response0bj = sendBalance(amount, user, email )
        return response0bj
-  }
-
-  public async verify({request}:HttpContextContract){
-    const body = request.body()
-    const {Id, Amount} = body
-    
-    if (request.host() ==='localhost:3000'){
-      return {
-        message:"unathorized access"
+    } catch (error) {
+      return{
+        error
       }
     }
-      
-    const responseObj = verify(Id, Amount)
-
-    return responseObj
+    
   }
 
 
+  //communicates with the Zapier webhook, and credits the account after verification.
+  public async verify({request}:HttpContextContract){
+    try {
+      const body = request.body()
+      const {Id, Amount} = body
+      
+      if (request.host() ==='localhost:3000' || ''){
+        return {
+          message:"unathorized access"
+        }
+      }
+        
+      const responseObj = verify(Id, Amount)
+      return responseObj
+    } catch (error) {
+      return {
+        error
+      }
+    }
+   
+  }
+
+//adds user bank for withdrawal
   public async addBank({request, auth}: HttpContextContract){
-
-
     try {
       const user = (auth.use('api').user!)
  const {code, accountNumber, bankname} = request.body()
@@ -112,9 +152,8 @@ export default class UsersController {
     
 }
 
-
+//adds beneficiaries for users
 public async addBeneficiary({request, auth}: HttpContextContract){
-
 
   try {
     const user = (auth.use('api').user!)
