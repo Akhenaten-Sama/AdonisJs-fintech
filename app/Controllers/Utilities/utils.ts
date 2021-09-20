@@ -140,20 +140,30 @@ export const addAccount = async (user_id, details, filter:String) => {
      }
 }
 
-//verifies the transaction and credits the account
-export const verify = async(user_id, amount)=>{
-
+//verifies the transaction and credits or debits the account based on transaction type.
+export const verify = async(user_id, amount, type)=>{
   const user = await User.find(user_id)
+  
   try {
+    if (type ==="credit" && user){
+      
+        user.balance = (user?.balance) + parseInt(amount)
+        user.save()
 
-    if( user){
-      user.balance = (user?.balance) + parseInt(amount)
+        return {
+          message:'account funded'
+        }
+      
+    }else if (type ==="debit" && user){
+      user.balance = (user?.balance) - parseInt(amount)
       user.save()
+     return{
+       message:"account debited"
+     }
     }
+    
  
- return {
-   message:'account funded'
- }
+
   } catch (error) {
    return{ message:"unable to fund account"}
   }

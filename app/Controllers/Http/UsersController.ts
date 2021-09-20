@@ -111,7 +111,7 @@ export default class UsersController {
   public async verify({request}:HttpContextContract){
     try {
       const body = request.body()
-      const {Id, Amount} = body
+      const {Id, Amount, type} = body
       
       if (request.host() ==='localhost:3000' || ''){
         return {
@@ -119,7 +119,7 @@ export default class UsersController {
         }
       }
         
-      const responseObj = verify(Id, Amount)
+      const responseObj = verify(Id, Amount, type)
       return responseObj
     } catch (error) {
       return {
