@@ -7,10 +7,10 @@ export default class Banks extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
 
-      table.integer('user_id').unsigned().references('id').inTable('users')
+      table.integer('user_id').unsigned().references('id').inTable('users').unique()
 
       table.string('bankname').notNullable()
-      table.integer('accountNumber').notNullable()
+      table.integer('account_number').notNullable()
       table.integer('bankcode').notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

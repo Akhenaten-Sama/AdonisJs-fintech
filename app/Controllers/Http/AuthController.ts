@@ -49,7 +49,11 @@ public async index({}:HttpContextContract){
        expiresIn: "7days",
      })
    //response.status(200).send('successful login')
-   return token.toJSON()
+   return {
+     name:user?.name,
+     balance: user?.balance,
+     email: user?.email,
+     token:token.toJSON()}
   //  return response.redirect().toRoute('UsersController.show', { id: user?.id })
 }
   

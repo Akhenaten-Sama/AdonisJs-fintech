@@ -30,7 +30,6 @@ export default class UsersController {
 
     try {
       const body = request.body()
-
       const user = await User.findByOrFail('id', params.id)
   
       user.name = body.name
@@ -48,7 +47,7 @@ export default class UsersController {
   }
 
 //delete user account
-  public async destroy({auth}:HttpContextContract){
+  public async destroy({auth, response}:HttpContextContract){
     try {
       const user = (auth.use('api').user!)
       user.delete()
@@ -57,6 +56,7 @@ export default class UsersController {
         message:"Account deleted"
       }
     } catch (error) {
+      response.status(503)
       return {
         error:"unable to delete user"
       }
@@ -65,20 +65,30 @@ export default class UsersController {
   }
 
   //funds the user account
-  public async fund({ auth, request }: HttpContextContract) {
-    const body = request.body()
+  public async fund({ auth,response, request }: HttpContextContract) {
+    try {
+      const body = request.body()
     const {amount } = body
     const user = (auth.use('api').user!)
 
     const responseObj = fundAccount(user, amount)
 
     return responseObj
+      
+    } catch (error) {
+      response.status(400)
+      return{
+        error:error.message
+      }
+    }
+    
   }
 
 
   //withdraws to bank 
-  public async withdraw({auth,  request }: HttpContextContract) {
-    const body = request.body()
+  public async withdraw({auth, response,  request }: HttpContextContract) {
+    try {
+      const body = request.body()
     const { amount } = body
 
     const user = (auth.use('api').user!)
@@ -86,11 +96,18 @@ export default class UsersController {
     const response0bj = await WithdrawtoBank(amount, user)
    console.log(response0bj)
     return response0bj
+    } catch (error) {
+     response.status(400)
+      return{
+        error
+      }
+    }
+    
   }
 
 
   //Transfers funds to fellow users, request are confiremd by the Zapier webhook
-  public async transfer({auth, request}:HttpContextContract){
+  public async transfer({auth, response, request}:HttpContextContract){
     try {
       const body = request.body()
     const user = (auth.use('api').user!)
@@ -99,6 +116,7 @@ export default class UsersController {
     const response0bj = sendBalance(amount, user, email )
        return response0bj
     } catch (error) {
+      response.status(503)
       return{
         error
       }
@@ -130,7 +148,7 @@ export default class UsersController {
   }
 
 //adds user bank for withdrawal
-  public async addBank({request, auth}: HttpContextContract){
+  public async addBank({request, response, auth}: HttpContextContract){
     try {
       const user = (auth.use('api').user!)
  const {code, accountNumber, bankname} = request.body()
@@ -145,6 +163,7 @@ export default class UsersController {
        return response0bj
   
     } catch (error) {
+      response.status(400)
       return {
         message:"invalid credentials, request failed!"
       }
@@ -153,7 +172,7 @@ export default class UsersController {
 }
 
 //adds beneficiaries for users
-public async addBeneficiary({request, auth}: HttpContextContract){
+public async addBeneficiary({request, response, auth}: HttpContextContract){
 
   try {
     const user = (auth.use('api').user!)
@@ -169,6 +188,7 @@ const details = {
      return response0bj
 
   } catch (error) {
+    response.status(400)
     return {
       message:"invalid credentials, request failed!"
     }

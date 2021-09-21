@@ -11,6 +11,7 @@ import { withDrawData, data } from './data'
 
 
 
+
 // transfers from one account to another
 export const sendBalance = async (amount, user, emailto) => {
   const From = user
@@ -41,6 +42,7 @@ export const sendBalance = async (amount, user, emailto) => {
 
 
 } catch (error) {
+  
   return {
     message:"Unable to process transfer"
 }
@@ -141,7 +143,8 @@ export const addAccount = async (user_id, details, filter:String) => {
 }
 
 //verifies the transaction and credits or debits the account based on transaction type.
-export const verify = async(user_id, amount, type)=>{
+export const verify = async(user_id, amount, type
+  )=>{
   const user = await User.find(user_id)
   
   try {

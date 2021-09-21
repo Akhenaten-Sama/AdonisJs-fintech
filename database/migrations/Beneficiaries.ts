@@ -17,7 +17,7 @@ export default class Beneficiaries extends BaseSchema {
 
       
        table.string('bankname').notNullable()
-       table.integer('accountnumber').notNullable()
+       table.integer('account_number').notNullable()
        table.integer('code').notNullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
