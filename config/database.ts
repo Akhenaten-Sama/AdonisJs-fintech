@@ -24,7 +24,7 @@ const databaseConfig: DatabaseConfig = {
   | file.
   |
   */
-  connection: Application.inDev? 'mysql':'cleardb',
+  connection: Application.inDev? 'mysql':'clearDB',
 
   connections: {
     /*
@@ -39,7 +39,7 @@ const databaseConfig: DatabaseConfig = {
     |
     */
 
-    cleardb:{
+    clearDB:{
       client: 'mysql',
       connection: {
         host: CLEARDB_DATABASE_URL.host as string,
@@ -58,11 +58,11 @@ const databaseConfig: DatabaseConfig = {
     mysql: {
       client: 'mysql',
       connection: {
-        host:CLEARDB_DATABASE_URL.host as string,
-        port:  Number(''),
-        user:CLEARDB_DATABASE_URL.username as string,
-        password:   CLEARDB_DATABASE_URL.password as string,
-        database: CLEARDB_DATABASE_URL.pathname.substr(1) as string,
+        host:Env.get('MYSQL_HOST'),
+        port: Env.get('MYSQL_PORT'),
+        user:Env.get('MYSQL_USER'),
+        password:  Env.get('MYSQL_PASSWORD', ''),
+        database: Env.get('MYSQL_DB_NAME'),
       },
       migrations: {
         naturalSort: true,

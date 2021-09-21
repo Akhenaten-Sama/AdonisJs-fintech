@@ -13,17 +13,28 @@
 */
 
 import Env from '@ioc:Adonis/Core/Env'
+import Application from '@ioc:Adonis/Core/Application'
+let envObj;
+if(Application.inDev){
+  envObj ={
+    MYSQL_HOST:  Env.schema.string({ format: 'host' }),
+    MYSQL_PORT: Env.schema.number(),
+    MYSQL_USER: Env.schema.string(),
+    MYSQL_PASSWORD: Env.schema.string.optional(),
+    MYSQL_DB_NAME: Env.schema.string(),
+    SESSION_DRIVER: Env.schema.string(),
+    MYSECRETKEY:Env.schema.string(),
+    APP_KEY: Env.schema.string(),
+    APP_NAME: Env.schema.string(),
+    DRIVE_DISK: Env.schema.enum(['local'] as const),
+    NODE_ENV: Env.schema.enum(['development', 'production', 'testing'] as const),
+  }
+}else{
+  envObj = {
+    CLEARDB_DATABASE: Env.schema.string()
+  }
+}
 
-export default Env.rules({
-  MYSQL_HOST: Env.schema.string({ format: 'host' }),
-  MYSQL_PORT: Env.schema.number(),
-  MYSQL_USER: Env.schema.string(),
-  MYSQL_PASSWORD: Env.schema.string.optional(),
-  MYSQL_DB_NAME: Env.schema.string(),
-  SESSION_DRIVER: Env.schema.string(),
-  MYSECRETKEY:Env.schema.string(),
-  APP_KEY: Env.schema.string(),
-  APP_NAME: Env.schema.string(),
-  DRIVE_DISK: Env.schema.enum(['local'] as const),
-  NODE_ENV: Env.schema.enum(['development', 'production', 'testing'] as const),
-})
+
+export default Env.rules(envObj)
+
